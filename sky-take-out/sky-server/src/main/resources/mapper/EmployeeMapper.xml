@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.EmployeeMapper">
+    <!--
+      select标签：员工分页查询SQL
+      id="pageQuery"：与EmployeeMapper接口中的pageQuery方法名完全一致，作为SQL的唯一标识
+      resultType="com.sky.entity.Employee"：指定查询结果映射到Employee实体类
+      作用：查询员工列表，支持按姓名模糊搜索，结果按创建时间倒序排列
+    -->
+    <select id="pageQuery" resultType="com.sky.entity.Employee">
+        select * from employee
+        <where>
+            <if test="name !=null and name !=''">
+                and name like concat('%',#{name},'%')
+            </if>
+        </where>
+        <!-- 排序规则：按员工创建时间（create_time）降序排列，最新创建的员工排在前面 -->
+        order by create_time desc
+    </select>
+    <!--
+      update标签：员工信息更新SQL
+      id="update"：与EmployeeMapper接口中的update方法名一致
+      parameterType="Employee"：指定传入参数类型为Employee实体类，接收待更新的员工数据
+      作用：动态更新员工信息，仅更新传入非null的字段，避免覆盖数据库原有有效数据
+    -->
+    <update id="update" parameterType="Employee">
+        update employee
+        <set>
+            <if test="name != null">name=#{name},</if>
+            <if test="username != null">username=#{username},</if>
+            <if test="password != null">password=#{password},</if>
+            <if test="phone != null">phone=#{phone},</if>
+            <if test="sex != null">sex=#{sex},</if>
+            <if test="idNumber != null">id_Number=#{idNumber},</if>
+            <if test="updateTime != null">update_Time=#{updateTime},</if>
+            <if test="updateUser != null">update_User=#{updateUser},</if>
+            <if test="status != null">status=#{status},</if>
+        </set>
+        where id = #{id}
+    </update>
+</mapper>

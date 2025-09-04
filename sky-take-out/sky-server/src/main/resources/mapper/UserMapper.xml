@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.UserMapper">
+    <!--
+          insert标签：单条插入用户数据（主要用于微信用户首次登录注册）
+          id="insert"：与UserMapper接口中insert方法名一致，唯一标识该SQL
+          useGeneratedKeys="true"：开启主键自动生成（适配MySQL自增主键，如user表id字段）
+          keyProperty="id"：将生成的用户ID回写到传入的User对象的id属性中（便于后续关联用户相关数据，如购物车、订单）
+        -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        insert into user (openid,name,phone,sex,id_number,avatar,create_time)
+        values (#{openid},#{name},#{phone},#{sex},#{idNumber},#{avatar},#{createTime})
+    </insert>
+    <!--
+     select标签：按时间范围统计用户数量
+     id="countByMap"：与UserMapper接口中countByMap方法名一致
+     resultType="java.lang.Integer"：返回结果为Integer类型（统计的用户数量）
+     功能：统计指定时间范围内注册的用户总数，用于运营数据报表（如“近7天新增用户数”“今日新增用户数”）
+   -->
+    <select id="countByMap" resultType="java.lang.Integer">
+        select count(id) from user
+        <where>
+            <if test="begin != null">
+                and create_time &gt; #{begin}
+            </if>
+            <if test="end != null">
+                and create_time &lt; #{end}
+            </if>
+        </where>
+    </select>
+
+
+</mapper>

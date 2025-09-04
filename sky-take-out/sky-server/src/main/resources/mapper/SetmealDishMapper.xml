@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.SetmealDishMapper">
+    <!--
+      select标签：根据菜品ID列表查询关联的套餐ID列表
+      id="getSetmealIdsByDishIds"：与SetmealDishMapper接口中getSetmealIdsByDishIds方法名一致，唯一标识该SQL
+      resultType="java.lang.Long"：指定查询结果为Long类型（对应套餐ID的数据类型）
+      功能：通过多个菜品ID，反向查询包含这些菜品的所有套餐ID（用于判断菜品是否关联套餐，避免误删）
+    -->
+    <select id="getSetmealIdsByDishIds" resultType="java.lang.Long">
+        select setmeal_id from setmeal_dish where dish_id in
+        <foreach collection="dishIds" item="dishId" separator="," open="(" close=")">
+            #{dishId}
+        </foreach>
+    </select>
+
+    <!--
+      insert标签：批量插入套餐-菜品关联数据
+      id="insertBatch"：与SetmealDishMapper接口中insertBatch方法名一致
+      parameterType="list"：指定传入参数为集合类型（需与接口方法传入的集合参数匹配，如List<SetmealDish>）
+      功能：一次性插入多个套餐与菜品的关联记录，适用于新增套餐时绑定多个菜品的场景
+    -->
+    <insert id="insertBatch" parameterType="list">
+        insert into setmeal_dish
+        (setmeal_id,dish_id,name,price,copies)
+        values
+        <foreach collection="setmealDishes" item="sd" separator=",">
+            (#{sd.setmealId},#{sd.dishId},#{sd.name},#{sd.price},#{sd.copies})
+        </foreach>
+    </insert>
+</mapper>

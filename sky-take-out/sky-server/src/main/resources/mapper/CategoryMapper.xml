@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.CategoryMapper">
+    <!--
+         select标签：定义查询SQL（分页查询分类列表）
+         id属性：与CategoryMapper接口中的pageQuery方法名完全一致
+         resultType属性：指定查询结果的返回类型（com.sky.entity.Category实体类）
+         作用：MyBatis会将查询结果自动映射到Category对象的属性中（字段名与属性名需匹配）
+       -->
+    <select id="pageQuery" resultType="com.sky.entity.Category">
+        select * from category
+        <where>
+            <if test="name != null and name != ''">
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test="type != null">
+                and type = #{type}
+            </if>
+        </where>
+        <!--
+            排序规则：
+            1. 先按sort字段升序（sort值越小，排序越靠前，用于手动控制分类顺序）
+            2. 再按create_time字段降序（创建时间越新，排序越靠前）
+            -->
+        order by sort asc , create_time desc
+    </select>
+    <!--
+          update标签：定义更新SQL（修改分类信息）
+          id属性：与CategoryMapper接口中的update方法名一致
+          parameterType属性：指定传入参数类型（Category实体类，接收前端传递的更新数据）
+        -->
+    <update id="update" parameterType="Category">
+        update category
+        <set>
+            <if test="type != null">
+                type = #{type},
+            </if>
+            <if test="name != null">
+                name = #{name},
+            </if>
+            <if test="sort != null">
+                sort = #{sort},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="updateUser != null">
+                update_user = #{updateUser}
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+    <!--
+          select标签：定义查询SQL（查询启用状态的分类列表）
+          id属性：与CategoryMapper接口中的list方法名一致
+          resultType属性：返回类型为Category实体类
+        -->
+    <select id="list" resultType="Category">
+        select * from category
+        where status = 1
+        <if test="type != null">
+            and type = #{type}
+        </if>
+        <!-- 排序规则：同分页查询，先按sort升序，再按create_time降序 -->
+        order by sort asc,create_time desc
+    </select>
+</mapper>

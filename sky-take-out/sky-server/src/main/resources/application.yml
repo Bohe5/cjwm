@@ -1,0 +1,82 @@
+#主要的配置文件
+# 【服务器配置】
+server:
+  # 项目启动后占用的端口号，前端通过 http://localhost:8080 访问后端服务
+  port: 8080
+# 【Spring 核心配置】
+spring:
+  profiles:
+    # 激活的环境配置（dev-开发环境、test-测试环境、prod-生产环境），对应 application-dev.yml 等文件
+    active: dev
+  main:
+    # 允许 Spring Bean 之间的循环依赖（如 A 依赖 B，B 依赖 A），避免启动报错
+    allow-circular-references: true
+  datasource:
+    # 使用 Druid 数据库连接池（高性能、支持监控的连接池）
+    druid:
+      driver-class-name: ${sky.datasource.driver-class-name}
+      url: jdbc:mysql://${sky.datasource.host}:${sky.datasource.port}/${sky.datasource.database}?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8&zeroDateTimeBehavior=convertToNull&useSSL=false&allowPublicKeyRetrieval=true
+      username: ${sky.datasource.username}
+      password: ${sky.datasource.password}
+      # 调整闲置连接超时时间（单位：毫秒，默认30分钟）
+      min-evictable-idle-time-millis: 300000
+      # 开启连接池定时检测，移除过期连接
+      test-while-idle: true
+  # Redis 缓存配置（用于缓存高频查询数据，如菜品分类、用户购物车等）
+  redis:
+    host: ${sky.redis.host}
+    port: ${sky.redis.port}
+#    password: ${sky.redis.password}
+    database: ${sky.redis.database}
+# 【MyBatis 配置】（ORM 框架，用于数据库交互）
+mybatis:
+  #mapper配置文件
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: com.sky.entity
+  configuration:
+    #开启驼峰命名
+    map-underscore-to-camel-case: true
+# 【日志配置】（控制不同模块的日志输出级别）
+logging:
+  level:
+    com:
+      sky:
+        mapper: debug
+        service: info
+        controller: info
+# 【自定义业务配置】（项目专属的业务参数，通过 ${} 可在代码中注入使用）
+sky:
+  # JWT（JSON Web Token）配置，用于用户/管理员登录认证（无状态令牌）
+  jwt:
+    # 设置jwt签名加密时使用的秘钥
+    admin-secret-key: itcast
+    # 设置jwt过期时间
+    admin-ttl: 7200000000
+    # 设置前端传递过来的令牌名称
+    admin-token-name: token
+    user-secret-key: itheima
+    user-token-name: authentication
+    user-ttl: 7200000
+  # 阿里云 OSS 配置（用于存储图片等静态资源，如菜品图片、用户头像）
+  alioss:
+    endpoint: ${sky.alioss.endpoint}
+    access-key-id: ${sky.alioss.access-key-id}
+    access-key-secret: ${sky.alioss.access-key-secret}
+    bucket-name: ${sky.alioss.bucket-name}
+  # 微信支付/登录配置（适配微信小程序/公众号的支付、登录功能）
+  wechat:
+    appid: ${sky.wechat.appid}
+    secret: ${sky.wechat.secret}
+    mchid: ${sky.wechat.mchid}
+    mchSerialNo: ${sky.wechat.mchSerialNo}
+    privateKeyFilePath: ${sky.wechat.privateKeyFilePath}
+    apiV3Key: ${sky.wechat.apiV3Key}
+    weChatPayCertFilePath: ${sky.wechat.weChatPayCertFilePath}
+    notifyUrl: ${sky.wechat.notifyUrl}
+    refundNotifyUrl: ${sky.wechat.refundNotifyUrl}
+  # 店铺基础信息配置
+  shop:
+    address: 北京市海淀区上地十街10号
+  # 百度地图 API 配置（用于地理位置相关功能，如根据地址解析经纬度、计算配送距离）
+  baidu:
+    ak:

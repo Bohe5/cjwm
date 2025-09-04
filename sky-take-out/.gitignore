@@ -1,0 +1,13 @@
+#用于指定 Git 版本控制系统在跟踪文件时应忽略的文件和目录
+#忽略项目根目录下的target文件夹。
+**/target/
+#忽略 IntelliJ IDEA 的项目配置目录。
+.idea
+#忽略 IntelliJ IDEA 生成的模块配置文件
+*.iml
+# Java编译产物
+*.class
+#忽略所有以Test结尾的 Java 测试文件
+*Test.java
+#忽略所有目录下的test文件夹
+**/test/

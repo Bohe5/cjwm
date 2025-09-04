@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.ShoppingCartMapper">
+    <!--
+          select标签：购物车列表查询（支持多条件筛选）
+          id="list"：与ShoppingCartMapper接口中list方法名一致，唯一标识该SQL
+          resultType="com.sky.entity.ShoppingCart"：查询结果映射到ShoppingCart实体类
+          功能：根据用户ID、商品类型（菜品/套餐）、菜品口味等条件，查询用户购物车中的商品记录
+        -->
+    <select id="list" resultType="com.sky.entity.ShoppingCart">
+        select * from shopping_cart
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="setmealId != null">
+                and setmeal_id = #{setmealId}
+            </if>
+            <if test="dishId != null">
+                and dish_id = #{dishId}
+            </if>
+            <if test="dishFlavor != null">
+                and dish_flavor = #{dishFlavor}
+            </if>
+        </where>
+    </select>
+    <!--
+      insert标签：批量插入购物车记录
+      id="insertBatch"：与ShoppingCartMapper接口中insertBatch方法名一致
+      parameterType="list"：指定传入参数为集合类型（需与接口方法传入的集合匹配，如List<ShoppingCart>）
+      功能：一次性插入多个购物车商品记录，适用于“一键加入多个商品到购物车”或“购物车数据恢复”场景
+    -->
+    <insert id="insertBatch" parameterType="list">
+        insert into shopping_cart
+        (name, image, user_id, dish_id, setmeal_id, dish_flavor, number, amount, create_time)
+        values
+        <foreach collection="shoppingCartList" item="sc" separator=",">
+            (#{sc.name},#{sc.image},#{sc.userId},#{sc.dishId},#{sc.setmealId},#{sc.dishFlavor},#{sc.number},#{sc.amount},#{sc.createTime})
+        </foreach>
+    </insert>
+</mapper>

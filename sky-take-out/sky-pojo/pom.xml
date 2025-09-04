@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Maven项目描述文件，用于定义项目的基本信息、依赖关系、构建配置等 -->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- 父项目配置，继承sky-take-out项目的依赖和配置 -->
+    <parent>
+        <artifactId>sky-take-out</artifactId>
+        <groupId>com.sky</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <!-- Maven模型版本，固定为4.0.0 -->
+    <modelVersion>4.0.0</modelVersion>
+    <!-- 当前项目的artifactId，用于标识项目 -->
+    <artifactId>sky-pojo</artifactId>
+    <!-- 项目依赖配置 -->
+    <dependencies>
+        <!-- Lombok依赖，用于简化JavaBean的 getter/setter、构造方法等代码 -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <!-- Jackson依赖，用于JSON数据的序列化和反序列化 -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.9.2</version>
+        </dependency>
+        <!-- Knife4j依赖，基于Swagger的API文档生成工具，用于自动生成接口文档 -->
+        <dependency>
+            <groupId>com.github.xiaoymin</groupId>
+            <artifactId>knife4j-spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>

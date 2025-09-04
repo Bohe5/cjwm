@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.sky.mapper.OrderDetailMapper">
+    <!--
+  insert标签：批量插入订单详情数据
+  id="insertBatch"：与OrderDetailMapper接口中的insertBatch方法名一致，作为该SQL的唯一标识
+  功能：一次性插入多个订单详情记录，适用于一个订单包含多个商品（菜品/套餐）的场景
+-->
+    <insert id="insertBatch" >
+        insert into order_detail (name, image, order_id, dish_id, setmeal_id, dish_flavor, number, amount)
+        values
+        <foreach collection="orderDetailList" item="od" separator=",">
+            (#{od.name}, #{od.image}, #{od.orderId}, #{od.dishId}, #{od.setmealId}, #{od.dishFlavor}, #{od.number}, #{od.amount})
+        </foreach>
+    </insert>
+</mapper>

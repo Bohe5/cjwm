@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!--
+  声明XML文档版本和编码格式
+  DOCTYPE声明：指定MyBatis映射文件的DTD约束，定义了合法的XML元素和属性
+  "-//mybatis.org//DTD Mapper 3.0//EN"：MyBatis 3.0 mapper的公共标识符
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd"：DTD约束文件的URL
+-->
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!--
+  mapper标签：映射文件的根标签
+  namespace属性：指定该映射文件对应的Mapper接口全类名（必须完全一致）
+  作用：MyBatis通过namespace+id定位SQL语句，实现接口与SQL的绑定
+-->
+<mapper namespace="com.sky.mapper.AddressBookMapper">
+    <!--
+         select标签：定义查询语句
+         id属性：SQL语句的唯一标识，需与Mapper接口中的方法名完全一致
+         parameterType属性：指定传入参数的类型（AddressBook实体类）
+         resultType属性：指定查询结果的返回类型（AddressBook实体类，MyBatis会自动映射字段）
+       -->
+    <select id="list" parameterType="AddressBook" resultType="AddressBook">
+        select * from address_book
+        <where>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="phone != null">
+                and phone = #{phone}
+            </if>
+            <if test="isDefault != null">
+                and is_default = #{isDefault}
+            </if>
+        </where>
+    </select>
+    <!--
+         update标签：定义更新语句
+         id属性：与Mapper接口的update方法名一致
+         parameterType属性：传入参数类型（AddressBook实体类）
+       -->
+    <update id="update" parameterType="addressBook">
+        update address_book
+        <set>
+            <if test="consignee != null">
+                consignee = #{consignee},
+            </if>
+            <if test="sex != null">
+                sex = #{sex},
+            </if>
+            <if test="phone != null">
+                phone = #{phone},
+            </if>
+            <if test="detail != null">
+                detail = #{detail},
+            </if>
+            <if test="label != null">
+                label = #{label},
+            </if>
+            <if test="isDefault != null">
+                is_default = #{isDefault},
+            </if>
+        </set>
+        <!-- where条件：只更新指定id的地址记录 -->
+        where id = #{id}
+    </update>
+
+</mapper>
